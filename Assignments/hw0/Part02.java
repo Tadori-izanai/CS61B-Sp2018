@@ -89,3 +89,4 @@ public class Part02 {
         } // s 依次取值 a[0], a[1], ..., a[a.length - 1].
     }
 }
+

@@ -7,7 +7,7 @@ public class Exercise2 {
             if (m[i] > maxVal)
                 maxVal = m[i];
         }
-        //  以下是等价的写法
+        // 以下是等价的写法
 //        for (int j : m) {
 //            if (j > maxVal)
 //                maxVal = j;
