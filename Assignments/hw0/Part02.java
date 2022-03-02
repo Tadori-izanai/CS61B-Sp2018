@@ -8,7 +8,7 @@ public class Part02 {
 //        method01();
 //        method02();
 //        method03();
-        method04();
+//        method04();
     }
 
     // 数组

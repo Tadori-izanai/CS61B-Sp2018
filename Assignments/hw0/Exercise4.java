@@ -8,7 +8,7 @@ public class Exercise4 {
         // Should print: [4, 8, -3, 13, 9, 4]
         System.out.println(java.util.Arrays.toString(a));   // 打印出 a 中所有元素
 
-        // another example
+        // Another example
         int[] another = {1, -1, -1, 10, 5, -1};
         n = 2;
         windowPosSum(another, n);
