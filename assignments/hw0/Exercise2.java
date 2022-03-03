@@ -1,4 +1,4 @@
-package Assignments.hw0;
+package assignments.hw0;
 
 public class Exercise2 {
     public static int max(int[] m) {

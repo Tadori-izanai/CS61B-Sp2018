@@ -1,4 +1,4 @@
-package ReadingNote.Chap01;
+package reading.chap01;
 
 public class HelloWorld {
     public static void main(String[] args) {

@@ -1,7 +1,4 @@
-package Assignments.hw0;
-
-import javax.crypto.interfaces.PBEKey;
-import javax.xml.transform.sax.SAXTransformerFactory;
+package assignments.hw0;
 
 public class Part02 {
     public static void main(String[] args) {

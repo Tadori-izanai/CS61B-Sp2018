@@ -1,7 +1,4 @@
-package Assignments.hw0;
-
-import javax.sound.midi.Soundbank;
-import java.util.concurrent.ThreadPoolExecutor;
+package assignments.hw0;
 
 public class Part01 {
     public static void main(String args[]) {

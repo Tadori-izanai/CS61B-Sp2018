@@ -1,4 +1,4 @@
-package Assignments.hw0;
+package assignments.hw0;
 
 public class Exercise4 {
     public static void main(String[] args) {
