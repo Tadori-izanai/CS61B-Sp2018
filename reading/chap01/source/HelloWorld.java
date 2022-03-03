@@ -1,4 +1,4 @@
-package reading.chap01;
+package reading.chap01.source;
 
 public class HelloWorld {
     public static void main(String[] args) {
