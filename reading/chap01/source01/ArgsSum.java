@@ -1,4 +1,4 @@
-package reading.chap01.source;
+package reading.chap01.source01;
 
 public class ArgsSum {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-# Introduction to Java
+# 1 Introduction to Java
 
 ## 1.1 Essentials
 
@@ -318,12 +318,12 @@
     >
     > ```java
     > public class ArgsSum {
-    >     public static void main(String[] args) {
-    >         int sum = 0;
-    >         for (String s : args)
-    >             sum  += Integer.parseInt(s);			// 调用 Integrate 类的 static method
-    >         System.out.println(sum);
-    >     }
+    >        public static void main(String[] args) {
+    >            int sum = 0;
+    >            for (String s : args)
+    >                sum  += Integer.parseInt(s);			// 调用 Integrate 类的 static method
+    >            System.out.println(sum);
+    >        }
     > }
     > ```
     >
@@ -334,12 +334,4 @@
 <br />
 
 ## Use Libraries
-
-
-
-
-
-
-
-
 
