@@ -15,6 +15,7 @@ public class SLList {
 //    private IntNode first;
     private IntNode sentinel;
     private int size;
+    private IntNode last;
 
 
     public SLList(int x) {
@@ -22,12 +23,14 @@ public class SLList {
         sentinel = new IntNode(114154, null);   // 不妨 114514
         sentinel.next = new IntNode(x, null);
         size = 1;
+        last = sentinel.next;
     }
 
     public SLList() {
 //        first = null;
         sentinel = new IntNode(114514, null);
         size = 0;
+        last = sentinel;
     }
 
     public void addFirst(int x) {
@@ -49,7 +52,7 @@ public class SLList {
 //        return count;
 //    }
 
-    public void addLast(int x) {
+    public void addLastOriginal(int x) {
     // >>>> 修正
 //        if (first == null) {
 //            first = new IntNode(x, null);
@@ -61,6 +64,12 @@ public class SLList {
         while (iter.next != null)
             iter = iter.next;
         iter.next = new IntNode(x, null);
+        size++;
+    }
+
+    public void addLast(int x) {
+        last.next = new IntNode(x, null);
+        last = last.next;
         size++;
     }
 

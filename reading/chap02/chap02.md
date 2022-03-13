@@ -402,7 +402,7 @@
     }
     ```
 
-### Improvement #7: Sentinel Nodes
+### Improvement #6b: Sentinel Nodes
 
 10. 为了避免 `addLast()` 中要对特殊情况做处理 (`first == null`)。可以引入一个特殊的 node `sentinel` (sb结点)，将其置于 list 的开头，代替 `first`. 其中 `sentinel.item` 可以为任意值。
 
@@ -446,8 +446,154 @@
 
 ### Invariants
 
+11. 具有 sb 结点的 SLList, 具有以下的 invariants
+    - `sentinel` 始终指向 sb 结点
+    - 首元结点存在的话，一定是 `sentinel.next`
+    - `size` is always the total number of items that have been added.
+
 ---
 
 <br />
 
-p  
+## 2.3 The DLList
+
+### addLast
+
+1. 考虑给 SLList 添加变量 `last` 来表示最后一个 node，于是 addLast 则不需要遍历整个 list
+
+    ```java
+    public void addLast(int x) {
+        last.next = new IntNode(x, null);
+        last = last.next;
+        size++;
+    }
+    ```
+
+    此时还要修改一下 constructor
+
+    ```java
+    public SLList(int x) {
+        sentinel = new IntNode(114154, null);
+        sentinel.next = new IntNode(x, null);
+        size = 1;
+        last = sentinel.next;	// 新增
+    }
+    public SLList() {
+        sentinel = new IntNode(114514, null);
+        size = 0;
+        last = sentinel;		// 新增
+    }
+    ```
+
+    > 添加 `last` 之后，`addLast()` and `getLast()` 很快，但是 `removeLast()` 仍然很慢
+    >
+    > - 注意添加 `secondToLast` 也无用 (因为当最后一项删除时，还需要找到倒数第三项)
+
+### Improvement #7: Looking Back
+
+2. 为了解决上面说的问题，考虑在每一个 `IntNode` 中添加一个向前的指针
+
+    ```java
+    public class IntNode {
+        public IntNode prev;	// back pointer
+        public int item;
+        public IntNode next;
+    }
+    ```
+
+    - 我们称由这样 node 组成的 list 为 **doubly linked list**. (没有 `prev` 的称为 **single linked list**)
+    - size 为 0 的 DLList 的形状如下
+
+    <img src="chap02.assets/image-20220313202705357.png" alt="image-20220313202705357" style="zoom:50%;" />
+
+    - size 为 2 的 DLList 的形状如下
+
+    <img src="chap02.assets/image-20220313202756427.png" alt="image-20220313202756427" style="zoom:50%;" />
+
+### Improvement #8: Sentinel Upgrade
+
+3. 引入上述 DLList 之后，编写某些 method 时需要处理一些特殊的情况. 所以考虑改进 sentinel.
+
+    > 以 `addFirst()` 为例，若 DLList 不为空的的时候，需要在头部插入 `x` 则需要
+    >
+    > ```java
+    > IntNode p = new IntNode(sentinel, x, sentinel.next);
+    > sentinel.next.prev = p;		// 当 size 为 0 的时候, sentinel.next == null, 则运行错误
+    > sentinel.next = p;
+    > ```
+
+    - 一种该改进方法是添加第二个 sb，放在末尾。形状如图
+
+    <img src="chap02.assets/image-20220313211303574.png" alt="image-20220313211303574" style="zoom:50%;" />
+
+    - 另一种方法是成环，with the front and back pointers sharing the same sentinel node。形状如下
+
+    <img src="chap02.assets/image-20220313211346214.png" alt="image-20220313211346214" style="zoom:50%;" />
+
+### Generic DLList
+
+4. 考虑将我们的 list 泛型化，只要在类声明中的 class 名之后添加 `<>` 即可
+
+    ```java
+    public class GenericSLList<ListType> {
+        // 注意 node 不能声明为 static, 不然无法使用 ListType
+        public class StuffNode {
+            public ListType item;
+            public StuffNode next;
+            public StuffNode(ListType i, StuffNode n) {
+                item = i;
+                next = n;
+            }
+        }
+    
+        private StuffNode sentinel;
+        private int size;
+        private StuffNode last;
+    
+        public GenericSLList(ListType x) {
+            sentinel = new StuffNode(x, null);          // 不妨把 x 丢到 sentinel 中
+            sentinel.next = new StuffNode(x, null);
+            size = 1;
+            last = sentinel.next;
+        }
+        public GenericSLList() {
+            sentinel = new StuffNode(null, null);   // 不妨把 null 丢到 sentinel 中
+            last = sentinel;
+        }
+        public void addFirst(ListType x) {
+            sentinel.next = new StuffNode(x, sentinel.next);    // 注意所有 node 都要在 sb 之后
+            size++;
+        }
+        public ListType getFirst() {
+            return sentinel.next.item;
+        }
+        public void addLast(ListType x) {
+            last.next = new StuffNode(x, null);
+            last = last.next;
+            size++;
+        }
+        public int size() {
+            return size;
+        }
+    }
+    ```
+
+    - Instantiate the class。示例如下
+
+        ```java
+        GenericSLList<String> d = new GenericSLList<>("hello");		// 右边的 <> 内写入 String 也没问题
+        d.addLast("world");
+        ```
+
+    - 注意泛型 (generic) 仅适用于 refence type. 要使用基本类型的时候, we use the reference version of the primitive type。示例
+
+        ```java
+        GenericSLList<Integer> d1 = new GenericSLList<>();
+        d1.addLast(10);
+        ```
+
+    - rules of thumb (经验法则)
+        - In the .java file **implementing** a data structure, specify your generic type name only once at the very top of the file after the class name.
+        - In other .java files, which use your data structure, specify the specific desired type during declaration, and use the empty diamond operator during instantiation.
+        - If you need to instantiate a generic over a primitive type, use `Integer`, `Double`, `Character`, `Boolean`, `Long`, `Short`, `Byte`, or `Float` instead of their primitive equivalents.
+
