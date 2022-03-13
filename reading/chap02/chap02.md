@@ -305,3 +305,149 @@
     - 如果嵌套类不需要使用 OuterClass 的任何 instance methods 或者 variables, 则可以把其声明为 static
     - 将嵌套类声明为 static，则 methods inside the static class can not access any of the members of the enclosing class. (意味着 `IntNode` 中的任意 method 无法访问 `first`, `addFirst()`, `getFirst()`)
 
+### addLast() and size()
+
+6. 可以创建一个 `addLast()` 用于在尾部插入一个新的 node
+
+    ```java
+    public void addLast(int x) {
+        IntNode iter = first;
+        while (iter.next != null)
+            iter = iter.next;
+        iter.next = new IntNode(x, null);
+    }
+    ```
+
+7. 可以创建一个 `size()` 用于返回 SLList 的 size
+
+    - 可以先写一个针对 IntNode 的 `size()`，然后再写 SLList 的 `size()`
+
+        ```java
+        public static int size(IntNode p) {
+            if (p.next == null)
+                return 1;
+            return (1 + size(p.next));
+        }
+        public int size() {
+            return size(first);
+        }	// 这里利用的是重载 (overload) 机制
+        ```
+
+    - 也可以利用 iteration
+
+        ```java
+        public int size() {
+            int count = 0;
+            for (IntNode iter = first; iter != null; iter = iter.next)
+                count++;
+            return count;
+        }
+        ```
+
+### Improvement #5: Caching
+
+8. 考虑添加一个变量 `size` 来跟踪当前 SLList 的 size. 这样，一些 method 有所改变
+
+    ```java
+    public class SLList {
+        private IntNode first;
+        private int size;
+    
+        public SLList(int x) {
+            first = new IntNode(x, null);
+            size = 1;	// 新增
+        }
+        public void addFirst(int x) {
+            first = new IntNode(x, first);
+            size++;		// 新增
+        }
+        public void addLast(int x) {
+            IntNode iter = first;
+            while (iter.next != null)
+                iter = iter.next;
+            iter.next = new IntNode(x, null);
+            size++;		// 新增
+        }
+        public int size() {
+            return size;
+        }
+        // ...
+    }
+    ```
+
+### Improvement #6: The Empty List
+
+9. 考虑实现一个空的 SLList. 首先添加一个 (重载) constructor
+
+    ```java
+    public SLList() {
+        first = null;
+        size = 0;
+    }
+    ```
+
+    注意当 SLList 为空时， `addLast` 会出错 (因为不能访问 first.next). 可做如下修改
+
+    ```java
+    public void addLast(int x) {
+        if (first == null) {
+            first = new IntNode(x, null);
+            return;			// 直接跳出此 method, 同 C
+        }
+        IntNode iter = first;
+        while (iter.next != null)
+            iter = iter.next;
+        iter.next = new IntNode(x, null);
+        size++;
+    }
+    ```
+
+### Improvement #7: Sentinel Nodes
+
+10. 为了避免 `addLast()` 中要对特殊情况做处理 (`first == null`)。可以引入一个特殊的 node `sentinel` (sb结点)，将其置于 list 的开头，代替 `first`. 其中 `sentinel.item` 可以为任意值。
+
+    - Class 的形状
+
+    <img src="chap02.assets/image-20220313162522976.png" alt="image-20220313162522976" style="zoom:50%;" />
+
+    - 此时 `addLast()` 不需要 `if (first == null) ...`，但是需要修改一通 SLList Class
+
+        ```java
+        public class SLList {
+            private IntNode sentinel;		// modified
+            private int size;
+        
+            public SLList(int x) {
+                sentinel = new IntNode(114154, null);   // 不妨 114514, modified
+                sentinel.next = new IntNode(x, null);
+                size = 1;
+            }
+            public SLList() {
+                sentinel = new IntNode(114514, null);	// modified
+                size = 0;
+            }
+            public void addFirst(int x) {
+                sentinel.next = new IntNode(x, sentinel.next);  // 注意所有 node 都要在 sb 之后, modified
+                size++;
+            }
+            public int getFirst() {
+                return sentinel.next.item;	// modified
+            }
+            public void addLast(int x) {
+                IntNode iter = sentinel;	// modified
+                while (iter.next != null)
+                    iter = iter.next;
+                iter.next = new IntNode(x, null);
+                size++;
+            }
+        	// ...
+        }
+        ```
+
+### Invariants
+
+---
+
+<br />
+
+p  
