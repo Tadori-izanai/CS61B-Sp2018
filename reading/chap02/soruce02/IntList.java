@@ -41,6 +41,20 @@ public class IntList {
     }
 
 
+    // Exercise 2.2.1
+    public void addFirst(int x) {
+        IntList iter = this;
+        int prevValue = x;
+        while (iter.rest != null) {
+            int temp = iter.first;
+            iter.first = prevValue;
+            prevValue = temp;
+            iter = iter.rest;
+        }
+        iter.rest = new IntList(prevValue, null);
+    }
+
+
 
     public static void main(String[] args) {
         IntList L0 = new IntList(5, null);
@@ -54,5 +68,13 @@ public class IntList {
         System.out.println(L.size());
         System.out.println(L.iterativeSize());
         System.out.println("L.get(1): " + L.get(2));
+
+        // test addFirst()
+        IntList L2 = new IntList(15, null);
+        L2.addFirst(10);
+        L2.addFirst(5);
+        System.out.println("L2.get(0) = " + L2.get(0));
+        System.out.println("L2.get(1) = " + L2.get(1));
+        System.out.println("L2.get(2) = " + L2.get(2));
     }
 }

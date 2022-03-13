@@ -188,7 +188,120 @@
     }
     ```
 
-    
 
+---
 
+<br />
+
+## 2.2 The SLList
+
+> `IntList` -> **naked recursive** data structure. 因此构建一个新的 class `SLList`.
+
+### Improvement #1: Rebranding
+
+1. 考虑重命名为
+
+    ```java
+    public class IntNode {
+        public int item;
+        public IntNode next;
+        public IntNode(int i, IntNode n) {
+            item = i;
+            next = n;
+        }
+    }
+    ```
+
+### Improvement #2: Bureaucracy
+
+2. `IntNode` 很难使用，故创建一个单独的 class `SLList` 用于用户交互
+
+    ```java
+    public class SLList {
+        public IntNode first;
+        // constructor
+        public SLList(int x) {
+            first = new IntNode(x, null);
+        }
+    }
+    ```
+
+### addFirst and getFirst
+
+3. 考虑给 `SLList` 添加两个 method
+
+    ```java
+    public void addFirst(int x) {
+        first = new IntNode(x, first);
+    }
+    public int getFirst() {
+        return first.item;
+    }
+    ```
+
+    - `addFirst`: Adds an item to the front of the list
+    - `getFirst`: Retrives the front item from the list
+
+    例如要创建一个 5 -> 10 -> 15 -> null 的 list，则可以 (注释的内容是使用 IntList)
+
+    ```java
+    SLList L = new SLList(15);			// IntList L = new IntList(15, null);
+    L.addFirst(10);					   // L = new IntList(10, L);
+    L.addFirst(5);					   // L = new IntList(5, L);
+    System.out.println(L.getFirst());	 // System.out.println(L.first);
+    ```
+
+### Improvement #3: Public vs. Private
+
+4. 我们将 SLList 中的 `first` 声明为 `private`
+
+    ```java
+    public class SLList {
+        private IntNode first;
+        // ...
+    }
+    ```
+
+    - private variables and methods can only be accessed by code inside the same .java file.
+    - (SLList.java 中的任意代码都可以访问 `first`，其他 files 则不行)
+
+### Improvement #4: Nested Class
+
+5. 考虑将 `IntNode` 嵌入 `SLList` 中
+
+    ```java
+    public class SLList {
+        // 此处声明为 static
+        public static class IntNode {
+            public int item;
+            public IntNode next;
+            public IntNode(int i, IntNode n) {
+                item = i;
+                next = n;
+            }
+        }
+        // ...
+    }
+    ```
+
+    - Java 中，可以将一个 class 嵌入到另一个 class 中
+
+    - Having a nested class has no meaningful effect on code performance.
+
+    - Nested classes 可分为 static and non-static 声明方式如下
+
+        ```java
+        class OuterClass {
+            class InnerClass {
+                // ...
+            }
+            static class StaticNestedClass {
+                // ...
+            }
+            // ...
+        }
+        ```
+
+    - 如果嵌套类不需要使用 OuterClass 的任何 instance methods 或者 variables, 则可以把其声明为 static
+    - 将嵌套类声明为 static，则 methods inside the static class can not access any of the members of the enclosing class. (意味着 `IntNode` 中的任意 method 无法访问 `first`, `addFirst()`, `getFirst()`)
 
