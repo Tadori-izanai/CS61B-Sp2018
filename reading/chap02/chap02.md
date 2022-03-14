@@ -597,3 +597,76 @@
         - In other .java files, which use your data structure, specify the specific desired type during declaration, and use the empty diamond operator during instantiation.
         - If you need to instantiate a generic over a primitive type, use `Integer`, `Double`, `Character`, `Boolean`, `Long`, `Short`, `Byte`, or `Float` instead of their primitive equivalents.
 
+---
+
+<br />
+
+## 2.4 Arrays
+
+### Arraay Basics
+
+1. Arrays consist of
+
+    - A fixed integer length $N$.
+    - A sequcence of $N$ memory boxes where all boxes are of the same type, and are numbered $0$ through $(N - 1)$
+
+    (Unlike classes, arrays do not have methods)
+
+### Array Creation
+
+2. 数组创建的 3 种有效的表示方法
+
+    ```java
+    x = new int[3];					// 采用默认值 0 来填充这个 box
+    y = new int[]{1, 2, 3, 4, 5};
+    int z = {9, 10, 11, 12, 13};	 // 同时声明和创建数组 (只能在此情况下使用), 省略了 new
+    ```
+
+### Array Access and Modificatoin
+
+3. System method `arraycopy()` 用于将信息从一个数组复制到另一个数组. 其接受 5 参数
+
+    - The array to use as a source
+    - Where to start in the source array
+    - The array to use as a destination
+    - Where to start in the destination array
+    - How many items to copy
+
+    使用示例
+
+    ```java
+    int[] x = new int[]{-1, 2, 5, 4, 99};
+    int[] b = {9, 10, 11};
+    System.arraycopy(b, 0, x, 3, 2);	// x 便乘 [-1, 2, 5, 9, 10]
+    ```
+
+    - `arraycopy()` 通常比循环赋值更快
+
+### 2D Arrays in Java
+
+4. 示例
+
+    ```java
+    int[][] pascalsTriangle;
+    pascalsTriangle = new int[4][];
+    int[] rowZero = pascalsTriangle[0];
+    
+    pascalsTriangle[0] = new int[]{1};
+    pascalsTriangle[1] = new int[]{1, 1};
+    pascalsTriangle[2] = new int[]{1, 2, 1};
+    pascalsTriangle[3] = new int[]{1, 3, 3, 1};
+    int[] rowTwo = pascalsTriangle[2];
+    rowTwo[1] = -5;
+    
+    int[][] matrix;
+    matrix = new int[4][];
+    matrix = new int[4][4];
+    
+    int[][] pascalAgain = new int[][]{
+            {1}, {1, 1}, {1, 2, 1}, {1, 3, 3, 1}
+    };
+    ```
+
+---
+
+<br />
