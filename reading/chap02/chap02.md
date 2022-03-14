@@ -670,3 +670,107 @@
 ---
 
 <br />
+
+## 2.5 The AList
+
+### First Attempt: The Naive Array Based List
+
+1. 写一个 Alist. 
+
+    ```java
+    public class AList {
+        private int size;
+        private int[] items;
+    
+        public AList() {
+            size = 0;
+            items = new int[100];
+        }
+        public void addLast(int x) {
+            items[size] = x;
+            size++;
+        }
+        public int getLast() {
+            return items[size - 1];
+        }
+        public int get(int i) {
+            return items[i];
+        }
+        public int size() {
+            return size;
+        }
+    }
+    ```
+
+### removeLast
+
+2. 给 AList 写一个 method, 返回最后一项的值，并删除其
+
+    ```java
+    public int removeLast() {
+        int last = getLast();
+        size--;			// 只需要 size-- 即可删除
+        return last;
+    }
+    ```
+
+### Naive Resizing Arrays
+
+3. 在 `addLast` 时，如果 size 超出了 constructor 所分配的 `items` 的大小，则需要扩展 `items`
+
+    ```java
+    public void addLast(int x) {
+        if (size == items.length) {
+            int a[] = new int[size + 1];			// 造出一个更大的 array
+            System.arraycopy(items, 0, a, 0, size);  // 将原来的数组拷贝被新的数组
+            items = a;							   // 丢掉原来的数组, 让 items 指向新的数组
+        }
+        items[size] = x;
+        size++;
+    }
+    ```
+
+### Analyzing the Naive Resizing Array
+
+4. 考虑 `addLast()` 执行 $N$ 次 ($N \gg 1$)。SLList 需要的时间正比于 $N$，然而 AList 所需的时间近似正比于 $N^2$
+
+    <img src="chap02.assets/image-20220314143428753.png" alt="image-20220314143428753" style="zoom:50%;" />
+
+    显然平方正比是不可接受的。
+
+### Geometric Resizing
+
+5. 为了解决上述问题，可以考虑 resize 的时候不加 1，而是加一个 `RFACTOR`，速度可以得到提升
+
+    ```java
+    public void addLast(int x) {
+        if (size == items.length)
+            resize(size + 1);
+        items[size] = x;
+        size++;
+    }
+    ```
+
+    但是这还是不行，不如乘一个 `RFACTOR`
+
+### Memory Performance
+
+6. 考虑某时我们删除了大量的元素，即利用率 R (`size / items.length`) 很小，则可以缩短 length
+    - In a typical implementation, we halve the size of the array when R fails to less than 0.25.
+
+### Generic ALists
+
+7. 考虑泛型化。但需要注意 Java 不允许我们创建泛型对象的 array.
+
+    ```java
+    TypeName[] items = new TypeName[8];		// error!
+    ```
+
+    可以使用以下的句法
+
+    ```java
+    TypeName[] items = (TypeName []) new Object[8];		// 会报警, 但是先不管
+    ```
+
+8. 我们还需要做另一个更改：Null out any items that we "delete".
+
