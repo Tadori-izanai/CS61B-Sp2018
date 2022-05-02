@@ -20,3 +20,29 @@
     - `public T getRecursive(int index)` get 的 recursion 版本
     - `public T LinkedListDeque()` the constructor (Creates an empty linked list deque)
 
+## The Deque Interface
+
+- 创建一个 `Deque.java`，内容如下
+
+    ```java
+    public interface Deque<T> {
+        void addFirst(T item);
+        void addLast(T item);
+        boolean isEmpty();
+        int size();
+        void printDeque();
+        T removeFirst();
+        T removeLast();
+        T get(int index);
+    }
+    ```
+
+- 同时 `LinkedListDeque`, `ArrayDeque` 的类声明要添加 `implements Deque<T>`
+
+    ```java
+    public class LinkedListDeque<T> implements Deque<T> {...}
+    public class ArrayDeque<T> implements Deque<T> {...}
+    ```
+
+- 同时还要使用添加标签 `@Override` 到 method that overrides a `Deque` method
+
